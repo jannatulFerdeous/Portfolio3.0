@@ -1,0 +1,120 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--color-paper);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* ---- Portrait — large, anchored to the bottom ---- */
+.hero-portrait {
+  position: absolute;
+  bottom: -257vh;
+  left: 55%;
+  transform: translateX(-50%);
+  height: 402vh;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.hero-portrait img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  filter: var(--shadow-portrait);
+}
+
+/* ---- Bottom-left info card ---- */
+.hero-card {
+  position: absolute;
+  bottom: clamp(24px, 4vw, 48px);
+  left: clamp(20px, 4vw, 56px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1.5px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-white) 55%, transparent);
+  backdrop-filter: blur(8px);
+  min-width: 170px;
+}
+
+.card-top {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+.card-mid {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  padding-left: 18px;
+  color: var(--color-ink);
+}
+
+.status-dot {
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-moss);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-moss) 60%, transparent);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-moss) 50%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.card-bottom {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--color-moss-deep);
+  font-weight: 600;
+}
+
+/* ---- Bottom-right meta ---- */
+.hero-meta {
+  position: absolute;
+  bottom: clamp(24px, 4vw, 48px);
+  right: clamp(20px, 4vw, 56px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  /* .hero-portrait {
+    height: 80vh;
+    bottom: -10vh;
+  } */
+
+  .hero-meta {
+    display: none;
+  }
+}

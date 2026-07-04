@@ -1,0 +1,107 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-night);
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+/* Curved lip that trails the panel during the shutter exit. It hangs just
+   below the screen and bows in/out via scaleY while the panel rises. */
+.loader-curve {
+  position: absolute;
+  top: calc(100% - 1px);
+  left: -10%;
+  width: 120%;
+  height: 130px;
+  background: var(--color-night);
+  border-radius: 0 0 50% 50%;
+  transform: scaleY(0);
+  transform-origin: top;
+  pointer-events: none;
+}
+
+/* Sentences scattered across the screen (positions match the reference),
+   spaced so no block crowds its neighbour. */
+.loader-line {
+  position: absolute;
+  margin: 0;
+  max-width: clamp(260px, 28vw, 400px);
+  color: var(--color-white);
+  font-size: clamp(1.15rem, 2vw, 1.9rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transform-origin: left top;
+  will-change: transform, opacity;
+}
+
+.loader-line:nth-child(1) {
+  left: 5%;
+  top: 10%;
+}
+
+.loader-line:nth-child(2) {
+  left: 27%;
+  top: 26%;
+}
+
+.loader-line:nth-child(3) {
+  left: 27%;
+  top: 56%;
+}
+
+.loader-line:nth-child(4) {
+  left: 58%;
+  top: 68%;
+}
+
+/* The surviving fragment: kept on one line, and inline-block so it can be
+   transformed when it travels to the centre of the screen. */
+.loader-last-keep {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.loader-skip {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: color-mix(in srgb, var(--color-white) 42%, transparent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .loader-line {
+    max-width: 80vw;
+    font-size: clamp(1.2rem, 5.4vw, 1.6rem);
+  }
+
+  .loader-line:nth-child(1) {
+    left: 8%;
+    top: 8%;
+  }
+
+  .loader-line:nth-child(2) {
+    left: 14%;
+    top: 26%;
+  }
+
+  .loader-line:nth-child(3) {
+    left: 8%;
+    top: 48%;
+  }
+
+  .loader-line:nth-child(4) {
+    left: 14%;
+    top: 66%;
+  }
+}

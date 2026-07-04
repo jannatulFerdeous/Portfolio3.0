@@ -1,0 +1,140 @@
+/* Scroll wrapper: its extra height is the scrub distance for the shrink. */
+.msg-scroll {
+  position: relative;
+  height: 260vh;
+}
+
+/* Pinned stage: holds the dark backdrop, the shrinking hero and signature. */
+.msg-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Dark olive backdrop (like the reference). For a light mint instead,
+   swap the background for something like #cfe8d5. */
+.msg-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--color-olive);
+  font-family: var(--font-sans);
+}
+
+/* The hero — scaled down by the scroll timeline, rounding into a card. */
+.msg-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  will-change: transform;
+  box-shadow: var(--shadow-card);
+}
+
+/* ---- Top caption ---- */
+.msg-caption {
+  position: absolute;
+  top: clamp(28px, 6vh, 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.msg-caption img {
+  width: clamp(28px, 3vw, 40px);
+  height: auto;
+  filter: invert(1) brightness(1.1);
+}
+
+.msg-caption span {
+  color: var(--color-cream);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ---- Marquees behind the hero card ---- */
+.msg-marquees {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.msg-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.msg-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: msg-marq 40s linear infinite;
+}
+
+.msg-marquee--reverse .msg-track {
+  animation-direction: reverse;
+}
+
+.msg-track span {
+  display: inline-block;
+}
+
+.msg-marquee--serif .msg-track span {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(3rem, 8vw, 8rem);
+  line-height: 1.1;
+  color: var(--color-moss-light);
+}
+
+.msg-marquee--bold .msg-track span {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 7vw, 7rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-cream);
+  margin-top: -0.18em;
+}
+
+@keyframes msg-marq {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---- Signature over the card ---- */
+.msg-signature {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -54%) rotate(-8deg);
+  font-family: var(--font-script);
+  font-size: clamp(7rem, 18vw, 17rem);
+  line-height: 1;
+  color: var(--color-lime);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .msg-signature {
+    font-size: clamp(5rem, 24vw, 8rem);
+  }
+}

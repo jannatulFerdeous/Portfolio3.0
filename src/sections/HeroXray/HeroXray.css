@@ -1,0 +1,46 @@
+.hero-stack {
+  position: relative;
+}
+
+/* The dragon hero, revealed only through the metaball lens (X-ray). */
+.hero-xray {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  -webkit-mask-image: url(#liquidLens);
+  mask-image: url(#liquidLens);
+}
+
+.lens-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.hero-xray .hero {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Dragon gets its own portrait sizing (different aspect ratio to the photo),
+   anchored at the true centre so its face sits centred like the photo. */
+.hero--dragon .hero-portrait {
+  height: 150vh;
+  bottom: -5vh;
+  left: 50%;
+}
+
+/* Flowing liquid splash cursor — transparent overlay above everything. */
+.splash-cursor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  display: block;
+}

@@ -1,0 +1,283 @@
+/* ---- Navbar (landonorris-style: brand · links · socials + connect) ----
+   One site-wide bar, fixed to the top of the viewport. Ink adapts to the
+   content scrolling underneath: black over light sections, lime over any
+   section marked data-nav="dark" (toggled by Navbar.jsx). */
+.navbar {
+  --nav-ink: var(--color-ink);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(18px, 2.6vw, 30px) clamp(20px, 4vw, 56px);
+  color: var(--nav-ink);
+  font-family: var(--font-display);
+  transition: color 0.35s ease;
+}
+
+.navbar.nav-dark {
+  --nav-ink: var(--color-lime);
+}
+
+.navbar a {
+  text-decoration: none;
+}
+
+/* Staggered drop-in entrance */
+@keyframes nav-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-brand,
+.nav-links a,
+.nav-socials a,
+.nav-connect {
+  animation: nav-drop 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.nav-brand { animation-delay: 0.25s; }
+.nav-links a:nth-child(1) { animation-delay: 0.35s; }
+.nav-links a:nth-child(2) { animation-delay: 0.41s; }
+.nav-links a:nth-child(3) { animation-delay: 0.47s; }
+.nav-links a:nth-child(4) { animation-delay: 0.53s; }
+.nav-links a:nth-child(5) { animation-delay: 0.59s; }
+.nav-socials a:nth-child(1) { animation-delay: 0.65s; }
+.nav-socials a:nth-child(2) { animation-delay: 0.72s; }
+.nav-socials a:nth-child(3) { animation-delay: 0.79s; }
+.nav-socials a:nth-child(4) { animation-delay: 0.86s; }
+.nav-connect { animation-delay: 0.93s; }
+
+.nav-brand {
+  font-weight: 800;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--nav-ink);
+  transition: color 0.35s ease;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2.6vw, 44px);
+}
+
+.nav-links a {
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  letter-spacing: 0.01em;
+  color: var(--nav-ink);
+  opacity: 0.85;
+  transition: opacity 0.25s ease, color 0.35s ease;
+}
+
+.nav-links a:hover {
+  opacity: 1;
+}
+
+.nav-links a.active {
+  opacity: 1;
+  color: var(--color-moss);
+}
+
+.navbar.nav-dark .nav-links a.active {
+  color: var(--color-white);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.6vw, 24px);
+  margin-left: auto;
+}
+
+.nav-socials {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid color-mix(in srgb, var(--nav-ink) 45%, transparent);
+  border-radius: 50%;
+  color: var(--nav-ink);
+  transition: border-color 0.25s ease, transform 0.25s ease, color 0.35s ease;
+}
+
+.nav-socials a:hover {
+  border-color: var(--nav-ink);
+  transform: translateY(-2px);
+}
+
+.nav-socials svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Sizing/typography come from the global .btn / .btn--outline classes;
+   here only the adaptive ink color and its hover inversion. */
+.nav-connect {
+  color: var(--nav-ink);
+}
+
+.nav-connect:hover {
+  background: var(--nav-ink);
+  border-color: var(--nav-ink);
+  color: var(--color-paper);
+}
+
+.navbar.nav-dark .nav-connect:hover {
+  color: var(--color-ink);
+}
+
+/* ---- Hamburger (mobile only) ---- */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid color-mix(in srgb, var(--nav-ink) 45%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  transition: border-color 0.25s ease;
+}
+
+.nav-burger span {
+  display: block;
+  width: 17px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--nav-ink);
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.35s ease;
+}
+
+/* burger → X */
+.navbar.menu-open .nav-burger span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar.menu-open .nav-burger span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar.menu-open .nav-burger span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* While the menu is open the whole bar sits on the glass panel. */
+.navbar.menu-open {
+  --nav-ink: var(--color-cream);
+}
+
+/* ---- Mobile menu: full-width glass panel sliding in from the right ---- */
+.nav-menu {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* behind the bar's own children, above the page */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7vh;
+  background: color-mix(in srgb, var(--color-olive) 72%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  transform: translateX(100%);
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-menu--open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.nav-menu-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav-menu-links a {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 8vw, 2.6rem);
+  letter-spacing: -0.02em;
+  color: var(--color-cream);
+  opacity: 0;
+  transform: translateX(32px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.nav-menu--open .nav-menu-links a {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.nav-menu-links a.active {
+  color: var(--color-lime);
+}
+
+.nav-menu-socials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-menu-socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid color-mix(in srgb, var(--color-cream) 45%, transparent);
+  border-radius: 50%;
+  color: var(--color-cream);
+}
+
+.nav-menu-socials svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ---- Responsive ---- */
+@media (min-width: 769px) {
+  .nav-menu {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links,
+  .nav-socials {
+    display: none;
+  }
+
+  .nav-burger {
+    display: flex;
+  }
+
+  .nav-connect {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+}

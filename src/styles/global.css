@@ -1,0 +1,110 @@
+/* ============================================================
+   Design tokens — the single source of truth for the visual
+   language. Every color and font in the project comes from here.
+   ============================================================ */
+:root {
+  /* ---- Brand palette ---- */
+  --color-lime: #d2ff00; /* signature accent */
+  --color-lime-deep: #c2ef00; /* accent hover */
+  --color-ink: #11140d; /* near-black text/UI on light */
+  --color-text: #1c1f16; /* body text */
+  --color-paper: #f4f4ef; /* light background */
+  --color-cream: #e8e6dc; /* light text on dark */
+  --color-olive: #2a2e1f; /* dark section background */
+  --color-night: #1b1c1e; /* loader background */
+  --color-moss: #9bb02f; /* olive-green accent */
+  --color-moss-deep: #7d8f2e; /* darker olive accent */
+  --color-moss-light: #b9c46a; /* pale olive (serif marquee) */
+  --color-white: #ffffff;
+
+  /* ---- Typography ---- */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Space Grotesk", "Helvetica Neue", Helvetica, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-script: "Mr Dafoe", "Brush Script MT", cursive;
+
+  /* ---- Effects ---- */
+  --shadow-card: 0 30px 80px rgba(0, 0, 0, 0.35);
+  --shadow-portrait: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.18));
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Buttons — global button system. Compose: `btn` + one variant.
+   Colors resolve from currentColor / tokens, so buttons adapt
+   to whatever context (light hero, dark section) they sit in.
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  letter-spacing: 0.01em;
+  padding: 13px 30px;
+  border: 1.5px solid transparent;
+  border-radius: 100px;
+  background: transparent;
+  color: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.btn--outline {
+  border-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+.btn--outline:hover {
+  border-color: currentColor;
+}
+
+.btn--solid {
+  background: var(--color-lime);
+  border-color: var(--color-lime);
+  color: var(--color-ink);
+}
+
+.btn--solid:hover {
+  background: var(--color-lime-deep);
+  border-color: var(--color-lime-deep);
+}
+
+/* App shell */
+.app {
+  min-height: 100vh;
+}

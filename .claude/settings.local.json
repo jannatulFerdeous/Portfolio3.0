@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//private/tmp/**)",
+      "Bash(curl -s \"https://landonorris.com/\" -o lando.html)"
+    ]
+  }
+}
