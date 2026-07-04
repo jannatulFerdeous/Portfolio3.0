@@ -50,7 +50,7 @@ export default function Message() {
       // full-screen hero only — they vanish the instant scrolling starts,
       // along with the x-ray and splash layers.
       tl.to(
-        ".msg-hero .hero-card, .msg-hero .hero-meta, .msg-hero .hero-xray, .msg-hero .splash-cursor",
+        ".msg-hero .hero-card, .msg-hero .hero-meta, .msg-hero .hero-xray",
         { opacity: 0, duration: 0.05, ease: "none" },
         0,
       );

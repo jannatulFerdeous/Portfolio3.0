@@ -22,6 +22,7 @@
   --font-display: "Space Grotesk", "Helvetica Neue", Helvetica, sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
   --font-script: "Mr Dafoe", "Brush Script MT", cursive;
+  --font-mono: "Apercu Mono", "Space Mono", ui-monospace, "SF Mono", monospace;
 
   /* ---- Effects ---- */
   --shadow-card: 0 30px 80px rgba(0, 0, 0, 0.35);
@@ -102,6 +103,21 @@ button {
 .btn--solid:hover {
   background: var(--color-lime-deep);
   border-color: var(--color-lime-deep);
+}
+
+.btn--ink {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn--ink:hover {
+  background: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.btn--block {
+  width: 100%;
 }
 
 /* App shell */

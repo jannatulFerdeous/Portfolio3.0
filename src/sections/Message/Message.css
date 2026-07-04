@@ -18,7 +18,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: var(--color-olive);
+  background: var(--color-night);
   font-family: var(--font-sans);
 }
 

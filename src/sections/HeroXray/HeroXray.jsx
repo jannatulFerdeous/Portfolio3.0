@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Hero from "../Hero/Hero";
-import SplashCursor from "./SplashCursor";
 import dragon from "../../assets/dragon.png";
 import "./HeroXray.css";
 
@@ -237,9 +236,6 @@ export default function HeroXray() {
           </mask>
         </defs>
       </svg>
-
-      {/* Flowing liquid splash cursor */}
-      <SplashCursor />
     </div>
   );
 }

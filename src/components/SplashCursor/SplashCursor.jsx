@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import "./SplashCursor.css";
 
 // Pavel Dobryakov's WebGL fluid solver, rendered as a flowing liquid splash
 // that follows the cursor. Transparent overlay, pointer-events: none.

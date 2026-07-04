@@ -73,16 +73,51 @@
 }
 
 .nav-links a {
-  font-weight: 700;
-  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
-  letter-spacing: 0.01em;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: clamp(0.82rem, 1vw, 0.95rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--nav-ink);
   opacity: 0.85;
+  perspective: 320px;
   transition: opacity 0.25s ease, color 0.35s ease;
 }
 
 .nav-links a:hover {
   opacity: 1;
+}
+
+/* Barrel-roll hover: two stacked copies of the label. On hover the front
+   face tilts up and out of a clipped slot while the second rolls up into
+   place — the rotateX under the link's perspective gives the 3D twist. */
+.nav-link-flip {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link-face {
+  display: block;
+  transform-origin: center bottom;
+  transition: transform 0.5s cubic-bezier(0.62, 0.05, 0.2, 0.95);
+}
+
+.nav-link-face--b {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  transform-origin: center top;
+  transform: translateY(100%) rotateX(-90deg);
+}
+
+.nav-links a:hover .nav-link-face {
+  transform: translateY(-100%) rotateX(90deg);
+}
+
+.nav-links a:hover .nav-link-face--b {
+  transform: translateY(0) rotateX(0);
 }
 
 .nav-links a.active {
@@ -182,24 +217,22 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* While the menu is open the whole bar sits on the glass panel. */
+/* While the menu is open the whole bar sits on the white panel. */
 .navbar.menu-open {
-  --nav-ink: var(--color-cream);
+  --nav-ink: var(--color-ink);
 }
 
-/* ---- Mobile menu: full-width glass panel sliding in from the right ---- */
+/* ---- Mobile menu: full-width solid white panel sliding in from the right.
+   Link rows: uppercase mono, hairline dividers, chevron at the right,
+   solid full-width CTA below (reference design). ---- */
 .nav-menu {
   position: fixed;
   inset: 0;
   z-index: -1; /* behind the bar's own children, above the page */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7vh;
-  background: color-mix(in srgb, var(--color-olive) 72%, transparent);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  background: var(--color-white);
+  padding: 110px 24px 40px;
   transform: translateX(100%);
   pointer-events: none;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -213,16 +246,22 @@
 .nav-menu-links {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 22px;
+  width: 100%;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
 }
 
 .nav-menu-links a {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(1.8rem, 8vw, 2.6rem);
-  letter-spacing: -0.02em;
-  color: var(--color-cream);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 4px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink);
   opacity: 0;
   transform: translateX(32px);
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -234,13 +273,28 @@
 }
 
 .nav-menu-links a.active {
-  color: var(--color-lime);
+  color: var(--color-moss);
+}
+
+.nav-menu-chevron {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+/* CTA under the list: design comes entirely from the global
+   .btn .btn--solid .btn--block classes — only spacing lives here. */
+.nav-menu-cta {
+  margin-top: 32px;
 }
 
 .nav-menu-socials {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  margin-top: auto;
 }
 
 .nav-menu-socials a {
@@ -249,9 +303,9 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border: 1.5px solid color-mix(in srgb, var(--color-cream) 45%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--color-ink) 35%, transparent);
   border-radius: 50%;
-  color: var(--color-cream);
+  color: var(--color-ink);
 }
 
 .nav-menu-socials svg {
@@ -268,16 +322,12 @@
 
 @media (max-width: 768px) {
   .nav-links,
-  .nav-socials {
-    display: none;
+  .nav-socials,
+  .nav-connect {
+    display: none; /* Let's Connect lives inside the menu on mobile */
   }
 
   .nav-burger {
     display: flex;
-  }
-
-  .nav-connect {
-    padding: 10px 20px;
-    font-size: 0.85rem;
   }
 }

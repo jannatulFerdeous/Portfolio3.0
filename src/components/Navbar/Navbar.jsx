@@ -7,9 +7,9 @@ import "./Navbar.css";
 // the bar. On mobile the links collapse into a hamburger menu.
 const NAV_LINKS = [
   { label: "Home", href: "#hero", active: true },
-  { label: "About", href: "#about" },
+  { label: "Experience", href: "#experience" },
+  { label: "Work", href: "#work" },
   { label: "Skills", href: "#skills" },
-  { label: "Portfolio", href: "#portfolio" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -91,7 +91,12 @@ export default function Navbar() {
       <nav className="nav-links">
         {NAV_LINKS.map(({ label, href, active }) => (
           <a key={label} href={href} className={active ? "active" : undefined}>
-            {label}
+            <span className="nav-link-flip">
+              <span className="nav-link-face">{label}</span>
+              <span className="nav-link-face nav-link-face--b" aria-hidden="true">
+                {label}
+              </span>
+            </span>
           </a>
         ))}
       </nav>
@@ -127,13 +132,26 @@ export default function Navbar() {
               key={label}
               href={href}
               className={active ? "active" : undefined}
-              style={{ transitionDelay: menuOpen ? `${0.1 + i * 0.06}s` : "0s" }}
+              style={{
+                transitionDelay: menuOpen ? `${0.1 + i * 0.06}s` : "0s",
+              }}
               onClick={close}
             >
-              {label}
+              <span>{label}</span>
+              <span className="nav-menu-chevron" aria-hidden="true">
+                ›
+              </span>
             </a>
           ))}
         </nav>
+
+        <a
+          href="#contact"
+          className="btn btn--ink btn--block nav-menu-cta"
+          onClick={close}
+        >
+          Let's Connect
+        </a>
 
         <div className="nav-menu-socials">
           {SOCIALS.map((s) => (

@@ -1,0 +1,11 @@
+/* Global flowing liquid splash cursor — a transparent overlay fixed over
+   the whole viewport, above all content (but below the loader). */
+.splash-cursor {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 500;
+  pointer-events: none;
+  display: block;
+}
