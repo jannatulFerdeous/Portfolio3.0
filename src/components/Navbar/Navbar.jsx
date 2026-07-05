@@ -7,7 +7,6 @@ import "./Navbar.css";
 // the bar. On mobile the links collapse into a hamburger menu.
 const NAV_LINKS = [
   { label: "Home", href: "#hero", active: true },
-  { label: "Experience", href: "#experience" },
   { label: "Work", href: "#work" },
   { label: "Skills", href: "#skills" },
   { label: "Contact", href: "#contact" },

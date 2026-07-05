@@ -1,0 +1,268 @@
+/* ============================================================
+   Project detail — full-screen overlay opened by zooming into an
+   experience card. Horizontal scroll-slider: intro (details + hero),
+   then media panels. Background adapts to each panel's media colour.
+   ============================================================ */
+.pd {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  overflow: hidden;
+  background: var(--pd-bg, #141414);
+  color: var(--color-cream);
+  transition: background 0.7s ease;
+  animation: pd-in 0.5s ease both;
+}
+
+@keyframes pd-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pd--closing {
+  animation: pd-out 0.42s ease forwards;
+}
+
+@keyframes pd-out {
+  to {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+/* ---- Back button ---- */
+.pd-back {
+  position: fixed;
+  top: clamp(18px, 3vh, 30px);
+  left: clamp(20px, 4vw, 56px);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 100px;
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: transform 0.25s ease;
+}
+
+.pd-back:hover {
+  transform: translateX(-3px);
+}
+
+/* ---- Track (transform-driven horizontal scrub) ---- */
+.pd-track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  cursor: grab;
+  will-change: transform;
+}
+
+.pd-track:active {
+  cursor: grabbing;
+}
+
+.pd-panel {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---- Intro panel ---- */
+.pd-intro {
+  display: grid;
+  grid-template-columns: 1.15fr 0.7fr 1.1fr;
+  align-items: center;
+  gap: clamp(28px, 4vw, 70px);
+  padding: clamp(90px, 12vh, 140px) clamp(28px, 5vw, 80px)
+    clamp(60px, 8vh, 100px);
+}
+
+.pd-title {
+  margin: 0 0 clamp(20px, 3vw, 34px);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 5vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-white);
+}
+
+.pd-desc {
+  margin: 0 0 1.1em;
+  max-width: 42ch;
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.05vw, 1.08rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-cream) 82%, transparent);
+}
+
+.pd-launch {
+  margin-top: clamp(16px, 2vw, 28px);
+  gap: 12px;
+}
+
+.pd-launch-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-ink);
+}
+
+.pd-meta-group {
+  margin-bottom: clamp(28px, 4vh, 44px);
+}
+
+.pd-meta-title {
+  margin: 0 0 16px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-lime);
+}
+
+.pd-meta-group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pd-meta-group li {
+  padding: 5px 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: color-mix(in srgb, var(--color-cream) 88%, transparent);
+}
+
+.pd-meta-group a:hover {
+  color: var(--color-lime);
+}
+
+.pd-intro-hero {
+  position: relative;
+  height: min(74vh, 620px);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.pd-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pd-hero-label {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  mix-blend-mode: difference;
+}
+
+/* ---- Media panels ---- */
+.pd-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Video → contained rectangle floating on the panel background */
+.pd-media--video .pd-media-video {
+  width: min(64vw, 1100px);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Image → 40% wide, full viewport height */
+.pd-media--image .pd-media-img {
+  width: 40%;
+  height: 100vh;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- HUD ---- */
+.pd-hint {
+  position: fixed;
+  right: clamp(20px, 4vw, 56px);
+  bottom: clamp(20px, 4vh, 34px);
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-cream) 70%, transparent);
+}
+
+.pd-dots {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(20px, 4vh, 34px);
+  z-index: 3;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 9px;
+}
+
+.pd-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-cream) 30%, transparent);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.pd-dots span.is-active {
+  background: var(--color-lime);
+  transform: scale(1.3);
+}
+
+/* ---- Zoom element (open transition) ---- */
+.exp-zoomer {
+  position: fixed;
+  z-index: 700;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  overflow: hidden;
+  will-change: width, height, top, left, transform;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .pd-intro {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: clamp(20px, 5vw, 36px);
+    overflow-y: auto;
+  }
+
+  .pd-intro-hero {
+    height: 40vh;
+    order: -1;
+  }
+
+  .pd-media--video .pd-media-video {
+    width: 88vw;
+  }
+}

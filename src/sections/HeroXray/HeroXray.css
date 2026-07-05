@@ -1,15 +1,50 @@
 .hero-stack {
   position: relative;
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
 }
 
-/* The dragon hero, revealed only through the metaball lens (X-ray). */
-.hero-xray {
+/* ---- Two stacked hero faces ---- */
+/* Each face fills the hero. The one on top (.is-top) wears the inverted
+   liquid mask so the lens punches holes through to the face beneath. The
+   whole top face slides up on the reveal toggle. */
+.hero-face {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  overflow: hidden;
   pointer-events: none;
+  will-change: transform;
+}
+
+.hero-face.is-top {
+  z-index: 2;
   -webkit-mask-image: url(#liquidLens);
   mask-image: url(#liquidLens);
+}
+
+.hero-face.is-bottom {
+  z-index: 1;
+}
+
+.hero-face--photo {
+  background: var(--color-paper);
+}
+
+.hero-face .hero {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Full-bleed background image (hero 2). */
+.hero-xray-bg {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .lens-defs {
@@ -17,19 +52,4 @@
   width: 0;
   height: 0;
   pointer-events: none;
-}
-
-.hero-xray .hero {
-  position: absolute;
-  inset: 0;
-  min-height: 0;
-  height: 100%;
-}
-
-/* Dragon gets its own portrait sizing (different aspect ratio to the photo),
-   anchored at the true centre so its face sits centred like the photo. */
-.hero--dragon .hero-portrait {
-  height: 150vh;
-  bottom: -5vh;
-  left: 50%;
 }

@@ -1,0 +1,324 @@
+/* ============================================================
+   Experience — horizontal slider. Dark section; the current slide
+   sits large on the left with a visual card, and the next slide peeks
+   in from the right. All colour/typography come from the global tokens.
+   ============================================================ */
+.exp {
+  --exp-slide: 82vw; /* width of one card; the remainder peeks the next */
+  --exp-gap: clamp(48px, 8vw, 150px); /* space between two cards */
+  --exp-pad: clamp(20px, 4vw, 56px);
+  position: relative;
+  background: var(--color-night);
+  color: var(--color-cream);
+}
+
+/* The stage is what ScrollTrigger pins: it fills the viewport and holds the
+   static chrome (overline, footer) while the track slides. */
+.exp-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: clamp(90px, 12vh, 150px) 0 clamp(46px, 7vh, 84px);
+  background: var(--color-night);
+  overflow: hidden;
+}
+
+/* ---- Slider viewport + track ---- */
+.exp-viewport {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left: var(--exp-pad);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.exp-track {
+  display: flex;
+  gap: var(--exp-gap); /* space between two cards */
+  width: max-content;
+  will-change: transform; /* x is driven imperatively by GSAP/ScrollTrigger */
+}
+
+/* ---- Slide ---- */
+.exp-slide {
+  flex: 0 0 var(--exp-slide);
+  width: var(--exp-slide);
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  opacity: 0.3;
+  transition: opacity 0.6s ease;
+}
+
+.exp-slide.is-active {
+  opacity: 1;
+}
+
+/* Breathing room to the right of the final card at the end of the scroll. */
+.exp-slide:last-child {
+  padding-right: clamp(40px, 8vw, 140px);
+}
+
+/* ---- Per-card kicker (above the number) ---- */
+.exp-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: clamp(14px, 2.4vw, 26px);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-cream) 62%, transparent);
+}
+
+.exp-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-lime);
+}
+
+/* ---- Info column ---- */
+.exp-num {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.2rem, 6.5vw, 6.6rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--color-lime);
+  margin-bottom: clamp(12px, 2.6vw, 26px);
+}
+
+.exp-role {
+  margin: 0 0 clamp(16px, 2vw, 24px);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 4.8vw, 4.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--color-cream);
+}
+
+.exp-desc {
+  max-width: 480px;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.98rem, 1.1vw, 1.12rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-cream) 80%, transparent);
+}
+
+.exp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(22px, 3vw, 34px);
+}
+
+.exp-tag {
+  padding: 9px 20px;
+  border: 1px solid color-mix(in srgb, var(--color-cream) 32%, transparent);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--color-cream) 85%, transparent);
+  white-space: nowrap;
+}
+
+/* ---- Visual card ---- */
+.exp-visual {
+  position: relative;
+  display: block;
+  padding: 0;
+  width: clamp(260px, 40vw, 600px);
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
+  background: radial-gradient(
+      120% 120% at 28% 18%,
+      color-mix(in srgb, var(--color-lime) 20%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, #000 22%, var(--color-olive)),
+      color-mix(in srgb, #000 58%, var(--color-olive))
+    );
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exp-slide.is-active .exp-visual:hover {
+  transform: scale(1.02);
+}
+
+.exp-visual-img {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exp-slide.is-active .exp-visual:hover .exp-visual-img {
+  transform: scale(1.05);
+}
+
+/* "View project" cue — only on the active card's image */
+.exp-visual-cue {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%) translateY(8px);
+  padding: 11px 22px;
+  border-radius: 100px;
+  background: var(--color-lime);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.exp-slide.is-active .exp-visual:hover .exp-visual-cue {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+/* Dummy image filling the card (swap the src in Experience.jsx for real
+   project shots). A soft gradient overlay keeps it cohesive on the dark
+   section and lets the corner index number read over it. */
+.exp-visual-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.exp-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    155deg,
+    transparent 45%,
+    color-mix(in srgb, var(--color-night) 78%, transparent)
+  );
+  pointer-events: none;
+}
+
+/* ---- Footer controls ---- */
+.exp-foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+  margin-top: clamp(24px, 4vh, 48px);
+  padding: 0 var(--exp-pad);
+}
+
+.exp-counter {
+  min-width: 62px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+}
+
+.exp-counter b {
+  font-weight: inherit;
+  color: var(--color-lime);
+}
+
+.exp-progress {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-cream) 18%, transparent);
+}
+
+.exp-progress span {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(var(--progress, 0.25));
+  background: var(--color-lime);
+  transition: transform 0.6s cubic-bezier(0.7, 0, 0.16, 1);
+}
+
+.exp-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.exp-scroll {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-cream) 60%, transparent);
+}
+
+.exp-scroll-arrow {
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-lime);
+  animation: exp-nudge 1.6s ease-in-out infinite;
+}
+
+@keyframes exp-nudge {
+  0%,
+  100% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* ---- Responsive: stack the slide, one full-width panel at a time ---- */
+@media (max-width: 768px) {
+  .exp {
+    --exp-slide: 100vw;
+    padding-top: clamp(80px, 14vh, 120px);
+  }
+
+  .exp-viewport {
+    padding-left: 0;
+    align-items: flex-start;
+  }
+
+  .exp-slide {
+    grid-template-columns: 1fr;
+    gap: clamp(22px, 6vw, 36px);
+    padding: 0 var(--exp-pad);
+  }
+
+  .exp-visual {
+    width: min(74vw, 360px);
+    justify-self: start;
+    order: -1; /* image above the text on mobile */
+  }
+
+  .exp-points {
+    max-width: none;
+  }
+
+  .exp-scroll {
+    display: none;
+  }
+}

@@ -46,11 +46,11 @@ export default function Message() {
         0,
       );
 
-      // The "Available for Work" card and the scroll text belong to the
-      // full-screen hero only — they vanish the instant scrolling starts,
-      // along with the x-ray and splash layers.
+      // The availability / reveal cards and the scroll meta belong to the
+      // full-screen hero only — they vanish the instant scrolling starts.
+      // (The x-ray holes close on their own once scrolled.)
       tl.to(
-        ".msg-hero .hero-card, .msg-hero .hero-meta, .msg-hero .hero-xray",
+        ".msg-hero .hero-cards, .msg-hero .hero-meta",
         { opacity: 0, duration: 0.05, ease: "none" },
         0,
       );
