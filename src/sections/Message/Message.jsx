@@ -46,11 +46,11 @@ export default function Message() {
         0,
       );
 
-      // The availability / reveal cards and the scroll meta belong to the
-      // full-screen hero only — they vanish the instant scrolling starts.
-      // (The x-ray holes close on their own once scrolled.)
+      // The availability / reveal cards, scroll meta, and hero-2 overlay +
+      // intro text belong to the full-screen hero only — they vanish the
+      // instant scrolling starts. (The x-ray holes close on their own.)
       tl.to(
-        ".msg-hero .hero-cards, .msg-hero .hero-meta",
+        ".msg-hero .hero-cards, .msg-hero .hero-meta, .msg-hero .hero2-overlay, .msg-hero .hero2-content",
         { opacity: 0, duration: 0.05, ease: "none" },
         0,
       );

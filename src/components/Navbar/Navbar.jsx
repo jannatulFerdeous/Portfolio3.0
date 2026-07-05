@@ -47,7 +47,15 @@ function SocialIcon({ label, href, icon }) {
 
 export default function Navbar() {
   const [dark, setDark] = useState(false);
+  const [heroRevealed, setHeroRevealed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Hero 2 (the reveal) asks for white ink so the nav reads over its image.
+  useEffect(() => {
+    const onReveal = (e) => setHeroRevealed(!!e.detail?.revealed);
+    window.addEventListener("herorevealchange", onReveal);
+    return () => window.removeEventListener("herorevealchange", onReveal);
+  }, []);
 
   // Ink flips when a data-nav="dark" section sits under the bar.
   useEffect(() => {
@@ -81,7 +89,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`navbar${dark ? " nav-dark" : ""}${menuOpen ? " menu-open" : ""}`}
+      className={`navbar${dark ? " nav-dark" : ""}${heroRevealed ? " nav-white" : ""}${menuOpen ? " menu-open" : ""}`}
     >
       <a href="#hero" className="nav-brand" onClick={close}>
         Jannatul

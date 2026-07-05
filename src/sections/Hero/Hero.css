@@ -7,6 +7,17 @@
   font-family: var(--font-sans);
 }
 
+/* ---- Animated topographic backdrop ---- */
+.hero-topo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
 /* ---- Portrait — large, anchored to the bottom ---- */
 .hero-portrait {
   position: absolute;
@@ -35,10 +46,62 @@
   z-index: 5;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch; /* both cards take the same (widest) width */
   gap: 12px;
+  width: max-content;
   max-width: min(90vw, 340px);
   pointer-events: auto;
+}
+
+/* Wraps the reveal button so the "Click me" hint can point at it. */
+.hero-reveal-wrap {
+  position: relative;
+  display: flex;
+}
+
+.hero-reveal-wrap .hero-reveal {
+  flex: 1;
+}
+
+/* ---- "Click me" hint pointing at the reveal card ---- */
+.hero-hint {
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 14px;
+  border-radius: 100px;
+  background: var(--color-lime);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  animation: hint-bob 1.1s ease-in-out infinite;
+}
+
+/* Little triangle pointing left, back at the button. */
+.hero-hint::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 7px solid transparent;
+  border-right-color: var(--color-lime);
+}
+
+@keyframes hint-bob {
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-50%) translateX(-6px);
+  }
 }
 
 .hero-status,

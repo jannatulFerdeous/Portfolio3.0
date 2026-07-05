@@ -27,40 +27,73 @@ const SWEEP_FAST_DURATION = [0.3, 0.5];
 const SWEEP_SLOW_DURATION = [1.2, 1.8];
 const SWEEP_SCALE = 1.7;
 
+// Rotating multilingual greeting shown on hero 2.
+const GREETINGS = [
+  "Hi!",
+  "Hola!",
+  "Bonjour!",
+  "Namaste!",
+  "নমস্কার!",
+  "こんにちは!",
+  "안녕하세요!",
+  "Ciao!",
+  "مرحبا!",
+  "Hallo!",
+];
+
 export default function HeroXray() {
   const stackRef = useRef(null);
 
   // Which hero is on top / in front. false → photo (hero 1), true → image
   // (hero 2). The top face is masked; the bottom face is the one revealed.
   const [revealed, setRevealed] = useState(false);
+  const [showHint, setShowHint] = useState(true);
+  const [greet, setGreet] = useState(0);
   const animatingRef = useRef(false);
+
+  // Cycle the greeting language.
+  useEffect(() => {
+    const id = setInterval(
+      () => setGreet((i) => (i + 1) % GREETINGS.length),
+      1900,
+    );
+    return () => clearInterval(id);
+  }, []);
   const photoRef = useRef(null);
   const imageRef = useRef(null);
 
-  // Slide the current top face up and off, reveal the one beneath, then flip
-  // roles. The slid face is reset to place on the next frame — once it's the
-  // (hidden) bottom face — so there's no flash of the old hero.
+  // Tell the navbar to switch to white ink while hero 2 is showing.
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("herorevealchange", { detail: { revealed } }),
+    );
+  }, [revealed]);
+
+  // Smooth GSAP swap: the current top face eases up and off while the one
+  // beneath eases from a slight zoom back to 1 (a soft parallax reveal).
+  // Roles flip while fully covered; the slid face resets a frame later — as
+  // the hidden bottom face — so there's no flash of the old hero.
   const toggleReveal = () => {
     if (animatingRef.current) return;
-    animatingRef.current = true;
-    const topEl = revealed ? imageRef.current : photoRef.current;
-    if (!topEl) {
+    setShowHint(false);
+    const outEl = revealed ? imageRef.current : photoRef.current; // sliding away
+    const inEl = revealed ? photoRef.current : imageRef.current; // revealed
+    if (!outEl || !inEl) {
       setRevealed((v) => !v);
-      animatingRef.current = false;
       return;
     }
-    gsap.to(topEl, {
-      yPercent: -100,
-      duration: 0.75,
-      ease: "power3.inOut",
-      onComplete: () => {
-        setRevealed((v) => !v);
+    animatingRef.current = true;
+    const tl = gsap.timeline();
+    tl.set(inEl, { scale: 1.08, transformOrigin: "50% 50%" })
+      .to(outEl, { yPercent: -100, duration: 0.95, ease: "expo.inOut" }, 0)
+      .to(inEl, { scale: 1, duration: 1.05, ease: "expo.out" }, 0)
+      .add(() => setRevealed((v) => !v))
+      .add(() => {
         requestAnimationFrame(() => {
-          gsap.set(topEl, { yPercent: 0 });
+          gsap.set(outEl, { yPercent: 0, scale: 1 });
           animatingRef.current = false;
         });
-      },
-    });
+      });
   };
 
   useEffect(() => {
@@ -121,9 +154,9 @@ export default function HeroXray() {
         const dt = Math.min(t - lastT, 0.05);
         lastT = t;
 
-        // Only peek while the hero is full-screen at the top of the page —
-        // once it starts shrinking into the Message card, close the holes.
-        const scrolled = window.scrollY > 60;
+        // Only peek while the hero is full-screen at the top of the page and
+        // not mid-swap — otherwise close the holes.
+        const scrolled = window.scrollY > 60 || animatingRef.current;
         if (scrolled) {
           over = false;
           sweep.active = false;
@@ -243,30 +276,58 @@ export default function HeroXray() {
           photoTop ? "is-bottom" : "is-top"
         }`}
         ref={imageRef}
-        aria-hidden="true"
+        aria-hidden={!revealed}
       >
         <div
           className="hero-xray-bg"
           style={{ backgroundImage: `url(${bgImage})` }}
         />
+        {/* Black overlay for contrast */}
+        <div className="hero2-overlay" />
+        {/* Right-aligned intro */}
+        <div className="hero2-content">
+          <span className="hero2-greeting" key={greet}>
+            {GREETINGS[greet]}
+          </span>
+          <h2 className="hero2-name">
+            I&apos;m <span>Jannat</span>
+          </h2>
+          <p className="hero2-desc">
+            I&apos;m a Software Engineer from Bangladesh who loves learning new
+            things and building unique, thoughtful products. I turn ideas into
+            fast, accessible web experiences with React, Next.js and creative
+            motion — a curious problem-solver at heart, always chasing the small
+            details that make the web feel alive.
+          </p>
+        </div>
       </div>
 
       {/* Persistent overlay: reveal card on top, availability card below */}
       <div className="hero-cards">
-        <button
-          type="button"
-          className={`hero-reveal${revealed ? " is-active" : ""}`}
-          onClick={toggleReveal}
-          aria-pressed={revealed}
-        >
-          <span className="hero-reveal-icon" aria-hidden="true">
-            ⇅
-          </span>
-          <span className="hero-reveal-text">
-            <strong>{revealed ? "Back to me" : "The other side"}</strong>
-            <span>{revealed ? "Return to portrait" : "Reveal · slide up"}</span>
-          </span>
-        </button>
+        <div className="hero-reveal-wrap">
+          <button
+            type="button"
+            className={`hero-reveal${revealed ? " is-active" : ""}`}
+            onClick={toggleReveal}
+            aria-pressed={revealed}
+          >
+            <span className="hero-reveal-icon" aria-hidden="true">
+              ⇅
+            </span>
+            <span className="hero-reveal-text">
+              <strong>{revealed ? "Back to me" : "The other side"}</strong>
+              <span>
+                {revealed ? "Return to portrait" : "Reveal · slide up"}
+              </span>
+            </span>
+          </button>
+
+          {showHint && (
+            <span className="hero-hint" aria-hidden="true">
+              Click me
+            </span>
+          )}
+        </div>
 
         <aside className="hero-status">
           <span className="hero-status-dot" />

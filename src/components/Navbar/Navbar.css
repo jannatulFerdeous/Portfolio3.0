@@ -22,6 +22,11 @@
   --nav-ink: var(--color-lime);
 }
 
+/* Hero 2 (the reveal image) is showing — force white ink. */
+.navbar.nav-white {
+  --nav-ink: var(--color-white);
+}
+
 .navbar a {
   text-decoration: none;
 }
@@ -125,7 +130,8 @@
   color: var(--color-moss);
 }
 
-.navbar.nav-dark .nav-links a.active {
+.navbar.nav-dark .nav-links a.active,
+.navbar.nav-white .nav-links a.active {
   color: var(--color-white);
 }
 
@@ -176,7 +182,8 @@
   color: var(--color-paper);
 }
 
-.navbar.nav-dark .nav-connect:hover {
+.navbar.nav-dark .nav-connect:hover,
+.navbar.nav-white .nav-connect:hover {
   color: var(--color-ink);
 }
 
