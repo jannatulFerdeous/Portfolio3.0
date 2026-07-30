@@ -124,7 +124,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -54%) rotate(-8deg);
-  font-family: var(--font-script);
+  font-family: "Mr Dafoe", "Brush Script MT", cursive;
   font-size: clamp(7rem, 18vw, 17rem);
   line-height: 1;
   color: var(--color-lime);

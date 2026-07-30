@@ -11,6 +11,7 @@
 .sk {
   --sk-pad: clamp(20px, 4vw, 56px);
   --sk-r: 330px; /* cylinder radius */
+  --sk-stage-h: clamp(250px, 27vw, 330px);
   --sk-line: color-mix(in srgb, var(--color-cream) 13%, transparent);
   --sk-surface: color-mix(in srgb, var(--color-cream) 5%, transparent);
   position: relative;
@@ -67,12 +68,11 @@
 /* Same outlined-serif second line the other section headings use. */
 .sk-title-outline {
   display: inline;
-  font-family: var(--font-serif);
-  font-style: italic;
+  font-family: var(--font-script);
+  font-style: normal;
   font-weight: 400;
   letter-spacing: -0.01em;
-  color: transparent;
-  -webkit-text-stroke: 1.3px var(--color-cream);
+  color: var(--color-lime);
 }
 
 .sk-intro {
@@ -86,10 +86,16 @@
 /* ============================================================
    The 3D stage
    ============================================================ */
+/* Holds the stage and the intro ball on the same coordinates, so the ball can
+   land exactly where the cylinder's axis is. */
+.sk-theatre {
+  position: relative;
+  margin-top: clamp(22px, 2.6vw, 38px);
+}
+
 .sk-stage {
   position: relative;
-  height: clamp(250px, 27vw, 330px);
-  margin-top: clamp(22px, 2.6vw, 38px);
+  height: var(--sk-stage-h);
   perspective: 1200px;
   perspective-origin: 50% 45%;
   cursor: grab;
@@ -205,6 +211,64 @@
   text-transform: uppercase;
   text-align: center;
   color: color-mix(in srgb, var(--color-cream) 78%, transparent);
+}
+
+/* ---- The drawn circle ---- */
+/* The section's opening beat. It starts flat to the viewer at ball size, its
+   outline draws itself, then it tips over on X into the footprint the
+   cylinder stands on. Everything about its state is GSAP's — it stays hidden
+   when the reveal never runs (reduced motion), which is why the base rule
+   sets no transform of its own. */
+.sk-orbit {
+  position: absolute;
+  top: calc(var(--sk-stage-h) / 2);
+  left: 50%;
+  width: min(calc(var(--sk-r) * 2), 86vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* The volume. Only present while the circle is facing you — once it lies
+   flat there is no sphere left to shade, so GSAP fades this out. */
+.sk-orbit-body {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 34% 30%,
+    color-mix(in srgb, var(--color-cream) 85%, transparent),
+    color-mix(in srgb, var(--color-lime) 90%, transparent) 45%,
+    color-mix(in srgb, var(--color-lime) 30%, var(--color-night)) 100%
+  );
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--color-lime) 32%, transparent);
+}
+
+.sk-orbit-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  /* Starts the draw at 12 o'clock instead of 3. */
+  rotate: -90deg;
+}
+
+/* The wrapper scales from ball size to full size, so the stroke width is
+   animated down in step to keep the line an even ~2px throughout. The
+   obvious `vector-effect: non-scaling-stroke` is not usable here: it moves
+   dash lengths into device space, which breaks the pathLength draw below. */
+.sk-orbit-line {
+  fill: none;
+  stroke: var(--color-lime);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  /* pathLength="1" in the markup, so one unit is the whole circumference. */
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
 }
 
 /* Soft pool of light the cylinder appears to stand on. */
@@ -332,10 +396,10 @@
 @media (max-width: 760px) {
   .sk {
     --sk-r: 225px;
+    --sk-stage-h: clamp(240px, 62vw, 300px);
   }
 
   .sk-stage {
-    height: clamp(240px, 62vw, 300px);
     perspective: 900px;
   }
 }

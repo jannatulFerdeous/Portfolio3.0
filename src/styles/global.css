@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Feeling Passionate Personal Use";
+  src: url("https://243307217.fs1.hubspotusercontent-na2.net/hubfs/243307217/fonts/Feeling%20Passionate%20Personal%20Use%20Only.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ============================================================
    Design tokens — the single source of truth for the visual
    language. Every color and font in the project comes from here.
@@ -21,7 +29,7 @@
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-display: "Space Grotesk", "Helvetica Neue", Helvetica, sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
-  --font-script: "Mr Dafoe", "Brush Script MT", cursive;
+  --font-script: "Feeling Passionate Personal Use", "Brush Script MT", cursive;
   --font-mono: "Apercu Mono", "Space Mono", ui-monospace, "SF Mono", monospace;
 
   /* ---- Effects ---- */

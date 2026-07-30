@@ -105,6 +105,8 @@
 
 .hero2-name span {
   color: var(--color-lime);
+  font-family: var(--font-script);
+  font-weight: 400;
 }
 
 .hero2-desc {

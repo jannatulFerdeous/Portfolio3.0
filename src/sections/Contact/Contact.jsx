@@ -55,7 +55,7 @@ export default function Contact() {
         </div>
 
         <footer className="ct-footer">
-          <span>© 2026 · Built with care</span>
+          <span>Developed By Jannatul Ferdeous</span>
           <a href="#hero">Return to the beginning ↑</a>
         </footer>
       </div>

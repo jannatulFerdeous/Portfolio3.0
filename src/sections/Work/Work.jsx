@@ -68,7 +68,7 @@ const EXPERIENCES = [
     image: dentonCover,
     project: makeProject(
       "frontend",
-      "Frontend Developer",
+      "Denton",
       [
         "Building production interfaces in React and Next.js — from design systems to shipped features used every day.",
         "Focused on clean, reusable components, strong performance budgets, and accessible, resilient UI.",
@@ -90,7 +90,7 @@ const EXPERIENCES = [
     image: keyrushCover,
     project: makeProject(
       "uimotion",
-      "UI / Motion Developer",
+      "KeyRush 3D",
       [
         "Turning Figma files into pixel-true, responsive interfaces with a strong sense of motion and detail.",
         "The project demonstrates how 3D, animation, interaction design, and modern web technologies can be brought together to create engaging and memorable digital product experiences.",
@@ -114,7 +114,7 @@ const EXPERIENCES = [
     image: dashboardCover,
     project: makeProject(
       "creative",
-      "Creative Developer",
+      "E-commerce Dashboard",
       [
         "Designed and developed RIP Portal as a modern, interactive web experience, combining responsive UI, smooth animations, visual storytelling, and engaging interactions to deliver a distinctive digital presence.",
         "Where design, motion, and code meet — experimental interfaces that reward exploration.",
@@ -138,7 +138,7 @@ const EXPERIENCES = [
     image: humlyCover,
     project: makeProject(
       "humly",
-      "Humly — Workplace Platform",
+      "Humly",
       [
         "Designed and developed Humly's digital presence, communicating its connected workplace solutions through a polished, responsive web experience.",
         "The platform unifies room and desk booking, visitor management, wayfinding, and workplace analytics to help organisations build smarter, more efficient offices.",
