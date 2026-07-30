@@ -88,7 +88,7 @@ export default function Message() {
   );
 
   return (
-    <div className="msg-scroll" ref={rootRef}>
+    <div id="hero" className="msg-scroll" ref={rootRef}>
       <div className="msg-stage">
         {/* Dark backdrop revealed as the hero shrinks */}
         <div className="msg-bg" ref={bgRef}>

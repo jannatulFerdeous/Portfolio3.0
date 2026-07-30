@@ -2,19 +2,34 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProjectDetail from "./ProjectDetail";
+import dentonCover from "../../assets/Denton Assets/d852784c-8273-478e-a509-9c83d8286514.png";
+import dentonDetail from "../../assets/Denton Assets/denton2.png";
+import dentonMobile from "../../assets/Denton Assets/denton-mobile.png";
+import keyrushCover from "../../assets/KeyRush/keyrush thumbnail.png";
+import keyrushDetail from "../../assets/KeyRush/custom-keyboard.png";
+import keyrushMobile from "../../assets/KeyRush/KeyRush-Mobile.png";
+import keyrushDetail3d from "../../assets/KeyRush/keyrush3d-1.png";
+import dashboardCover from "../../assets/Dashboard/971e7bc8-77b9-4da3-bcb6-eeb77e79a090.png";
+import dashboardProduct from "../../assets/Dashboard/product.png";
+import dashboardBar from "../../assets/Dashboard/Bar.png";
+import dashboardRip from "../../assets/Dashboard/RIP.png";
+import humlyCover from "../../assets/Humly/2ec873f5-e54b-49f4-8b43-31ef6ab1fdf2.png";
+import humlyDetail from "../../assets/Humly/humly.png";
+import humlyMobile from "../../assets/Humly/mobile-humly.png";
 import "./Work.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Dummy media for the project-detail pages. Swap these for your own files
-// (drop them in /public and use "/my-video.mp4" so colour extraction works
-// same-origin); the per-media `bg` is the fallback background colour.
+// (drop them in /public and use "/my-video.mp4"). Media panels alternate shape
+// by position — even index renders wide, odd renders tall — so keep landscape
+// footage on the even slots.
 const SAMPLE_VIDEOS = [
   "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
   "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
 ];
 
-function makeProject(seed, title, description) {
+function makeProject(seed, title, description, overrides = {}) {
   return {
     title,
     description,
@@ -25,20 +40,15 @@ function makeProject(seed, title, description) {
       "Interaction",
       "Animation",
     ],
-    links: [
-      { label: "Live Site", href: "#" },
-      { label: "GitHub", href: "#" },
-      { label: "Case Study", href: "#" },
-    ],
-    launchHref: "#",
-    bg: "#16150f",
-    // details → video (rectangle) → image (full-width) → video → image
+    liveHref: "#",
+    // intro → video (wide) → image (tall) → video (wide) → image (tall)
     media: [
-      { type: "video", src: SAMPLE_VIDEOS[0], bg: "#1a140e" },
-      { type: "image", src: `https://picsum.photos/seed/${seed}-a/1800/1080`, bg: "#232323" },
-      { type: "video", src: SAMPLE_VIDEOS[1], bg: "#12161a" },
-      { type: "image", src: `https://picsum.photos/seed/${seed}-b/1800/1080`, bg: "#20211c" },
+      { type: "video", src: SAMPLE_VIDEOS[0] },
+      { type: "image", src: `https://picsum.photos/seed/${seed}-a/1800/1080` },
+      { type: "video", src: SAMPLE_VIDEOS[1] },
+      { type: "image", src: `https://picsum.photos/seed/${seed}-b/1200/1800` },
     ],
+    ...overrides,
   };
 }
 
@@ -52,59 +62,108 @@ function makeProject(seed, title, description) {
 const EXPERIENCES = [
   {
     id: "01",
-    role: "Frontend Developer",
-    desc: "Building production interfaces in React and Next.js — from design systems to shipped features, with a focus on performance and accessibility.",
-    tags: ["React", "Next.js", "TypeScript", "GSAP"],
-    image: "https://picsum.photos/seed/frontend/900/900",
-    project: makeProject("frontend", "Frontend Developer", [
-      "Building production interfaces in React and Next.js — from design systems to shipped features used every day.",
-      "Focused on clean, reusable components, strong performance budgets, and accessible, resilient UI.",
-    ]),
+    role: "Denton",
+    desc: "transforming the digital presence of growing businesses, such as interior design firms, wellness practices, and B2B enterprises, using the powerful HubSpot CMS and custom-engineered Website.",
+    tags: ["Hubspot", "Javascript", "GSAP", "Parallax", "Vanilla CSS"],
+    image: dentonCover,
+    project: makeProject(
+      "frontend",
+      "Frontend Developer",
+      [
+        "Building production interfaces in React and Next.js — from design systems to shipped features used every day.",
+        "Focused on clean, reusable components, strong performance budgets, and accessible, resilient UI.",
+      ],
+      {
+        liveHref: "https://denton.co.uk/",
+        media: [
+          { type: "image", src: dentonDetail, alt: "Denton website" },
+          { type: "image", src: dentonMobile, alt: "Denton mobile website" },
+        ],
+      },
+    ),
   },
   {
     id: "02",
-    role: "UI / Motion Developer",
-    desc: "Turning Figma files into pixel-true, responsive interfaces with a strong sense of motion — micro-interactions that make products feel alive.",
-    tags: ["Figma", "GSAP", "Framer Motion", "CSS"],
-    image: "https://picsum.photos/seed/uimotion/900/900",
-    project: makeProject("uimotion", "UI / Motion Developer", [
-      "Turning Figma files into pixel-true, responsive interfaces with a strong sense of motion and detail.",
-      "Micro-interactions and GSAP-driven animation that make products feel alive without getting in the way.",
-    ]),
+    role: "KeyRush 3D",
+    desc: "Designed and developed an immersive 3D product experience for KeyRush, a premium mechanical keyboard concept. The website combines bold visual storytelling with interactive product exploration, featuring animated 3D elements, smooth scrolling, dynamic sliders, and an engaging product customization experience.",
+    tags: ["Threejs", "WebGL", "GSAP", "Tailwind CSS"],
+    image: keyrushCover,
+    project: makeProject(
+      "uimotion",
+      "UI / Motion Developer",
+      [
+        "Turning Figma files into pixel-true, responsive interfaces with a strong sense of motion and detail.",
+        "The project demonstrates how 3D, animation, interaction design, and modern web technologies can be brought together to create engaging and memorable digital product experiences.",
+      ],
+      {
+        liveHref: "https://keyrush-3d.netlify.app/",
+        githubHref: "https://github.com/jannatulFerdeous/KeyRush-3d-website",
+        media: [
+          { type: "image", src: keyrushDetail, alt: "KeyRush keyboard customisation" },
+          { type: "image", src: keyrushMobile, alt: "KeyRush mobile website" },
+          { type: "image", src: keyrushDetail3d, alt: "KeyRush 3D keyboard" },
+        ],
+      },
+    ),
   },
   {
     id: "03",
-    role: "Creative Developer",
+    role: "E-commerce Dashboard",
     desc: "Scroll-driven storytelling and immersive web experiences — experimental interfaces built with WebGL and Three.js that reward exploration.",
-    tags: ["Three.js", "WebGL", "GLSL", "Blender"],
-    image: "https://picsum.photos/seed/creative/900/900",
-    project: makeProject("creative", "Creative Developer", [
-      "Scroll-driven storytelling and immersive, playful web experiences built with WebGL and Three.js.",
-      "Where design, motion, and code meet — experimental interfaces that reward exploration.",
-    ]),
+    tags: ["Reactjs", "Tailwind CSS", "Framer Motion"],
+    image: dashboardCover,
+    project: makeProject(
+      "creative",
+      "Creative Developer",
+      [
+        "Designed and developed RIP Portal as a modern, interactive web experience, combining responsive UI, smooth animations, visual storytelling, and engaging interactions to deliver a distinctive digital presence.",
+        "Where design, motion, and code meet — experimental interfaces that reward exploration.",
+      ],
+      {
+        liveHref: "https://rip-portal.netlify.app/",
+        githubHref: "https://github.com/jannatulFerdeous/E-commerce-Admin-Dashboard",
+        media: [
+          { type: "image", src: dashboardProduct, alt: "Dashboard product overview" },
+          { type: "image", src: dashboardBar, alt: "Dashboard analytics chart" },
+          { type: "image", src: dashboardRip, alt: "RIP Portal dashboard" },
+        ],
+      },
+    ),
   },
   {
     id: "04",
-    role: "Always Learning",
-    desc: "A running set of side projects and open-source work — the place I try new tools and ideas, currently exploring 3D on the web.",
-    tags: ["Vite", "Open Source", "3D Web", "R3F"],
-    image: "https://picsum.photos/seed/learning/900/900",
-    project: makeProject("learning", "Always Learning", [
-      "A running set of side projects and open-source work — the place I try new tools and ideas.",
-      "Currently exploring 3D on the web, modern tooling with Vite, and everything in between.",
-    ]),
+    role: "Humly",
+    desc: "Designed and developed a polished digital experience for Humly, an integrated workplace platform that brings room and desk booking, visitor management, wayfinding, and workplace analytics into one seamless system.",
+    tags: ["HubSpot CMS", "JavaScript", "CSS", "GSAP"],
+    image: humlyCover,
+    project: makeProject(
+      "humly",
+      "Humly — Workplace Platform",
+      [
+        "Designed and developed Humly's digital presence, communicating its connected workplace solutions through a polished, responsive web experience.",
+        "The platform unifies room and desk booking, visitor management, wayfinding, and workplace analytics to help organisations build smarter, more efficient offices.",
+      ],
+      {
+        liveHref: "https://www.humly.com/",
+        services: ["Web Design", "Web Development", "HubSpot CMS", "Interaction", "Animation"],
+        media: [
+          { type: "image", src: humlyDetail, alt: "Humly workplace platform" },
+          { type: "image", src: humlyMobile, alt: "Humly mobile website" },
+        ],
+      },
+    ),
   },
 ];
+
+// The detail view scrolls straight from one project into the next, so it needs
+// the whole list — same order as the slides. It does not wrap: scrolling past
+// the end of the last one closes the overlay and returns here.
+const PROJECTS = EXPERIENCES.map((e) => e.project);
 
 function Visual({ image, onOpen }) {
   return (
     <button className="exp-visual" onClick={onOpen} aria-label="Open project">
-      <img
-        className="exp-visual-img"
-        src={image}
-        alt=""
-        draggable="false"
-      />
+      <img className="exp-visual-img" src={image} alt="" draggable="false" />
       <span className="exp-visual-cue">View project</span>
     </button>
   );
@@ -255,15 +314,18 @@ export default function Work() {
             top: zoom.rect.top,
             width: zoom.rect.width,
             height: zoom.rect.height,
-            backgroundImage: `url(${zoom.src})`,
+            // Quoted: an unquoted url() breaks on any space in the path, and
+            // local assets live in folders like "Denton Assets".
+            backgroundImage: `url("${zoom.src}")`,
           }}
         />
       )}
 
       {openIndex !== null && (
         <ProjectDetail
-          data={EXPERIENCES[openIndex].project}
-          hero={EXPERIENCES[openIndex].image}
+          projects={PROJECTS}
+          index={openIndex}
+          onIndexChange={setOpenIndex}
           onClose={() => setOpenIndex(null)}
         />
       )}

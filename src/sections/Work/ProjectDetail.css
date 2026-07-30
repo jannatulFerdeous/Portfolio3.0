@@ -1,29 +1,34 @@
 /* ============================================================
-   Project detail — full-screen overlay opened by zooming into an
-   experience card. Horizontal scroll-slider: intro (details + hero),
-   then media panels. Background adapts to each panel's media colour.
+   PROJECT DETAILS — the horizontal project view.
+
+   Opened as a full-screen overlay by zooming into a Work card. The stage is
+   the clipping box: the live view sits in it, and an incoming next project is
+   absolutely placed against it and slid across.
    ============================================================ */
-.pd {
+
+.pd-stage {
   position: fixed;
   inset: 0;
   z-index: 600;
   overflow: hidden;
-  background: var(--pd-bg, #141414);
-  color: var(--color-cream);
-  transition: background 0.7s ease;
-  animation: pd-in 0.5s ease both;
+  background: var(--pd-bg);
+  /* `backwards`, not `both`: on the last project the end-of-track overscroll
+     scrubs opacity/transform on this node inline, and a forwards-filling
+     animation would outrank those and pin it back to fully opaque. */
+  animation: pd-in 0.5s ease backwards;
+
+  --pd-bg: #16150f; /* warm near-black, one shade off --color-ink */
+  --pd-text: var(--color-cream);
+  --pd-muted: color-mix(in srgb, var(--color-cream) 72%, transparent);
 }
 
 @keyframes pd-in {
   from {
     opacity: 0;
   }
-  to {
-    opacity: 1;
-  }
 }
 
-.pd--closing {
+.pd-stage--closing {
   animation: pd-out 0.42s ease forwards;
 }
 
@@ -34,98 +39,143 @@
   }
 }
 
-/* ---- Back button ---- */
-.pd-back {
-  position: fixed;
-  top: clamp(18px, 3vh, 30px);
-  left: clamp(20px, 4vw, 56px);
-  z-index: 3;
+.pd {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--pd-bg);
+  color: var(--pd-text);
+}
+
+/* ---- Back ---- */
+.pd__back {
+  position: absolute;
+  top: clamp(18px, 3vh, 40px);
+  left: clamp(20px, 4vw, 64px);
+  z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  border: none;
-  border-radius: 100px;
+  border: 0;
+  border-radius: 999px;
   background: var(--color-white);
   color: var(--color-ink);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.9rem;
+  letter-spacing: 0.04em;
   transition: transform 0.25s ease;
 }
 
-.pd-back:hover {
+.pd__back:hover {
   transform: translateX(-3px);
 }
 
-/* ---- Track (transform-driven horizontal scrub) ---- */
-.pd-track {
+.pd__back svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Track: full-height panels in a row, moved by transform ---- */
+.pd__track {
+  position: absolute;
+  inset: 0;
   display: flex;
-  height: 100%;
-  width: max-content;
-  cursor: grab;
   will-change: transform;
 }
 
-.pd-track:active {
-  cursor: grabbing;
-}
-
-.pd-panel {
-  flex: 0 0 100vw;
-  width: 100vw;
-  height: 100%;
+.pd__panel {
   position: relative;
-  overflow: hidden;
+  flex: 0 0 auto;
+  height: 100%;
 }
 
-/* ---- Intro panel ---- */
-.pd-intro {
+/* ---- Intro panel: half the viewport, two columns that split on scroll ---- */
+.pd__panel--intro {
+  flex: 0 0 50%;
   display: grid;
-  grid-template-columns: 1.15fr 0.7fr 1.1fr;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(20px, 3vw, 52px);
+  align-content: center; /* centred so it lines up with the card you zoomed from */
   align-items: center;
-  gap: clamp(28px, 4vw, 70px);
-  padding: clamp(90px, 12vh, 140px) clamp(28px, 5vw, 80px)
-    clamp(60px, 8vh, 100px);
+  padding: clamp(40px, 6vh, 80px) 0 clamp(40px, 6vh, 80px)
+    clamp(20px, 3vw, 56px); /* no right padding — the first media panel follows */
 }
 
-.pd-title {
-  margin: 0 0 clamp(20px, 3vw, 34px);
+.pd__col {
+  will-change: transform, opacity;
+}
+
+.pd__title {
+  margin: 0 0 32px;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.6rem, 5vw, 4.6rem);
-  line-height: 1;
+  font-size: clamp(2rem, 3.4vw, 3.2rem);
+  line-height: 1.04;
   letter-spacing: -0.02em;
   color: var(--color-white);
 }
 
-.pd-desc {
-  margin: 0 0 1.1em;
-  max-width: 42ch;
+.pd__desc {
   font-family: var(--font-sans);
-  font-size: clamp(0.95rem, 1.05vw, 1.08rem);
-  line-height: 1.6;
-  color: color-mix(in srgb, var(--color-cream) 82%, transparent);
+  font-size: clamp(0.9rem, 0.98vw, 1rem);
+  line-height: 1.55;
+  color: var(--pd-muted);
 }
 
-.pd-launch {
-  margin-top: clamp(16px, 2vw, 28px);
+.pd__desc p {
+  margin: 0 0 16px;
+}
+
+.pd__actions {
+  display: flex;
+  flex-wrap: wrap;
   gap: 12px;
+  margin-top: 34px;
 }
 
-.pd-launch-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+.pd__launch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 0;
+  padding: 16px 30px;
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.pd__launch::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-lime);
+}
+
+.pd__launch:hover {
+  background: var(--color-lime);
+  transform: translateY(-2px);
+}
+
+.pd__launch:hover::before {
   background: var(--color-ink);
 }
 
-.pd-meta-group {
-  margin-bottom: clamp(28px, 4vh, 44px);
+.pd__col--2 {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding-top: 4px;
 }
 
-.pd-meta-title {
-  margin: 0 0 16px;
+.pd__list-title {
+  margin-bottom: 12px;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.18em;
@@ -133,111 +183,112 @@
   color: var(--color-lime);
 }
 
-.pd-meta-group ul {
+.pd__list-body {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.pd-meta-group li {
-  padding: 5px 0;
+.pd__list-body li {
+  margin: 0 0 7px;
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: color-mix(in srgb, var(--color-cream) 88%, transparent);
 }
 
-.pd-meta-group a:hover {
+.pd__list-body a:hover {
   color: var(--color-lime);
 }
 
-.pd-intro-hero {
-  position: relative;
-  height: min(74vh, 620px);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.pd-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.pd-hero-label {
-  position: absolute;
-  top: 20px;
-  left: 22px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-white);
-  mix-blend-mode: difference;
-}
-
-/* ---- Media panels ---- */
-.pd-media {
+/* ---- Media panels: alternating shapes, each centred with side gaps ---- */
+.pd__panel--media {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 clamp(16px, 2.5vw, 48px);
 }
 
-/* Video → contained rectangle floating on the panel background */
-.pd-media--video .pd-media-video {
-  width: min(64vw, 1100px);
-  aspect-ratio: 16 / 9;
+.pd__panel--media :is(img, video) {
+  display: block;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 16px;
+  background: var(--pd-bg);
+}
+
+/* Wide rectangle (landscape) */
+.pd__panel--wide :is(img, video) {
+  width: min(64vw, 1200px);
+  height: 66vh;
   box-shadow: var(--shadow-card);
 }
 
-/* Image → 40% wide, full viewport height */
-.pd-media--image .pd-media-img {
-  width: 40%;
+/* Tall column — full viewport height, bleeds top to bottom */
+.pd__panel--tall :is(img, video) {
+  width: 40vw;
   height: 100vh;
-  object-fit: cover;
-  display: block;
+  border-radius: 0;
+}
+
+/* ---- Incoming next project ------------------------------------------------
+   Past the last panel the next project's view slides in from the right,
+   scrubbed by the same scroll physics. At full width it simply becomes the
+   view you are reading. */
+.pd--incoming {
+  z-index: 6;
+  will-change: transform;
+  box-shadow: -40px 0 80px rgba(0, 0, 0, 0.55); /* reads as a sheet sliding over */
+  border-left: 1px solid color-mix(in srgb, var(--color-cream) 12%, transparent);
+  /* Inert until it commits: once it covers the cursor it would otherwise start
+     eating the wheel itself, so the scroll still dragging it across would
+     scroll it instead — it would arrive deep in its media panels rather than
+     on its intro. */
+  pointer-events: none;
 }
 
 /* ---- HUD ---- */
-.pd-hint {
-  position: fixed;
-  right: clamp(20px, 4vw, 56px);
-  bottom: clamp(20px, 4vh, 34px);
-  z-index: 3;
+.pd__scrollhint {
+  position: absolute;
+  right: clamp(20px, 4vw, 64px);
+  bottom: 24px;
+  z-index: 5;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-cream) 70%, transparent);
+  white-space: nowrap;
+  color: var(--pd-muted);
+  transition: opacity 0.3s ease;
 }
 
-.pd-dots {
-  position: fixed;
+.pd__scrollhint.is-hidden {
+  opacity: 0;
+}
+
+.pd__dots {
+  position: absolute;
   left: 50%;
-  bottom: clamp(20px, 4vh, 34px);
-  z-index: 3;
+  bottom: 26px;
+  z-index: 5;
   transform: translateX(-50%);
   display: flex;
-  gap: 9px;
+  gap: 10px;
 }
 
-.pd-dots span {
+.pd__dots span {
   width: 7px;
   height: 7px;
-  border-radius: 50%;
+  border-radius: 999px;
   background: color-mix(in srgb, var(--color-cream) 30%, transparent);
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.pd-dots span.is-active {
+.pd__dots span.is-active {
   background: var(--color-lime);
-  transform: scale(1.3);
+  transform: scale(1.35);
 }
 
-/* ---- Zoom element (open transition) ---- */
+/* ---- Zoom clone (Work card → detail open transition) ---- */
 .exp-zoomer {
   position: fixed;
   z-index: 700;
@@ -248,21 +299,82 @@
   will-change: width, height, top, left, transform;
 }
 
-/* ---- Responsive ---- */
+/* ---- Mobile: a plain vertical column, not the horizontal slider -----------
+   A wheel/drag-driven horizontal track fights the one gesture a phone owns, so
+   below this width the whole thing becomes ordinary stacked content that
+   scrolls natively. The runtime checks the SAME width (STACK_AT in
+   ProjectDetail.jsx) and stops driving the track — keep the two in sync. */
 @media (max-width: 900px) {
-  .pd-intro {
-    grid-template-columns: 1fr;
-    align-content: center;
-    gap: clamp(20px, 5vw, 36px);
-    overflow-y: auto;
+  .pd-stage {
+    overflow-y: auto; /* the overlay is fixed, so it has to scroll itself */
+    -webkit-overflow-scrolling: touch;
   }
 
-  .pd-intro-hero {
-    height: 40vh;
-    order: -1;
+  .pd {
+    position: relative;
+    inset: auto;
+    height: auto;
+    overflow: visible;
   }
 
-  .pd-media--video .pd-media-video {
-    width: 88vw;
+  /* In flow now, so it rides along at the top of a long scroll instead of
+     being left behind at the top of the page. */
+  .pd__back {
+    position: sticky;
+    top: 12px;
+    left: auto;
+    margin: 16px 0 4px clamp(16px, 4vw, 24px);
+  }
+
+  .pd__track {
+    position: relative;
+    inset: auto;
+    flex-direction: column;
+    height: auto;
+    gap: 14px;
+    padding-bottom: 48px;
+    will-change: auto;
+    transform: none !important; /* whatever the slider last set is meaningless here */
+  }
+
+  .pd__panel {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+  }
+
+  .pd__panel--intro {
+    flex-basis: auto;
+    display: block; /* was a 2-column grid */
+    padding: 20px clamp(16px, 4vw, 24px) 12px;
+  }
+
+  .pd__title {
+    margin-bottom: 20px;
+  }
+
+  .pd__col--2 {
+    margin-top: 28px;
+  }
+
+  /* Both media shapes collapse to one full-width image per row — the
+     wide/tall alternation only means anything alongside a horizontal track. */
+  .pd__panel--media {
+    padding: 0 clamp(16px, 4vw, 24px);
+  }
+
+  .pd__panel--media :is(img, video),
+  .pd__panel--wide :is(img, video),
+  .pd__panel--tall :is(img, video) {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+
+  /* Slider furniture: nothing to page through any more. */
+  .pd__dots,
+  .pd__scrollhint {
+    display: none;
   }
 }

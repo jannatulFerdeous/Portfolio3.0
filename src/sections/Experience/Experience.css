@@ -1,0 +1,830 @@
+/* ============================================================
+   Experience — the section inverts as you scroll. It starts night-dark
+   (seamless with the Work slider above it) and cross-fades to white over
+   the first half-viewport of scrolling, driven from JS.
+
+   Every colour in here resolves from --xp-bg / --xp-fg, which are the two
+   values being interpolated, so the whole section — text, hairlines, rail,
+   lanyard — inverts together instead of one piece at a time.
+   ============================================================ */
+.xp {
+  --xp-pad: clamp(20px, 4vw, 56px);
+  --xp-rail: 15px; /* distance from list edge to the rail line */
+  --xp-gap: clamp(26px, 3vw, 46px); /* rail → row text */
+  /* Start of the fade; JS scrubs these to paper/ink. */
+  --xp-bg: var(--color-night);
+  --xp-fg: var(--color-cream);
+  --xp-line: color-mix(in srgb, var(--xp-fg) 15%, transparent);
+  position: relative;
+  background: var(--xp-bg);
+  color: var(--xp-fg);
+  /* Generous tail: this is the last section on the page, and the white end
+     of the cross-fade needs room to land in rather than arriving at the
+     document bottom. */
+  padding: clamp(90px, 13vh, 170px) var(--xp-pad) clamp(140px, 26vh, 320px);
+  /* `clip`, not `hidden` — `hidden` would make this a scroll container and
+     the sticky aside below would stop sticking. */
+  overflow: clip;
+}
+
+/* Hairline grid wash — barely there, but it keeps the whitespace from
+   feeling empty. */
+.xp::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--xp-fg) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--xp-fg) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 96px 96px;
+  mask-image: radial-gradient(120% 80% at 70% 0%, #000 0%, transparent 72%);
+}
+
+.xp-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.25fr);
+  gap: clamp(40px, 6vw, 110px);
+  align-items: start;
+}
+
+/* ---- Sticky intro column ---- */
+/* Sticky, and deliberately compact: the whole column — heading, lead and the
+   hanging card — has to fit one viewport or the card drops below the fold. */
+.xp-aside {
+  position: sticky;
+  top: clamp(88px, 11vh, 118px);
+}
+
+/* The ribbon runs up behind this column, so the copy has to sit on top of it. */
+.xp-kicker,
+.xp-title,
+.xp-lead {
+  position: relative;
+  z-index: 1;
+}
+
+.xp-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--xp-fg) 62%, transparent);
+}
+
+.xp-kicker-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-lime);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-lime) 30%, transparent);
+}
+
+.xp-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 4vw, 3.7rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+/* Second line drawn as an outline — same trick as the slider numerals. */
+.xp-title-outline {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: transparent;
+  -webkit-text-stroke: 1.3px var(--xp-fg);
+}
+
+.xp-lead {
+  max-width: 36ch;
+  margin: clamp(14px, 1.8vw, 20px) 0 0;
+  font-size: clamp(0.92rem, 0.95vw, 1rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--xp-fg) 68%, transparent);
+}
+
+/* ============================================================
+   Lanyard ID card — hangs from the strap on the left column and
+   bobs, so it stays alive while the timeline scrolls past.
+   ============================================================ */
+.xp-id {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: clamp(26px, 3.4vw, 40px);
+}
+
+/* ---- Ribbon + clip ---- */
+.xp-id-lanyard {
+  position: relative;
+  width: 100%;
+  height: 44px;
+}
+
+/* One long strap running up past the top of the viewport. The section's
+   `overflow: clip` trims it at the section edge on the way in, so the ribbon
+   appears to feed out of the top of the screen as you scroll down to it. */
+.xp-id-ribbon {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 15px;
+  height: 100vh;
+  transform: translateX(-50%);
+  /* Mixed toward the foreground, so the strap stays legible whether the
+     section is currently night or white. */
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--xp-fg) 52%, var(--xp-bg)),
+    color-mix(in srgb, var(--xp-fg) 76%, var(--xp-bg)) 42%,
+    color-mix(in srgb, var(--xp-fg) 56%, var(--xp-bg))
+  );
+  /* Woven edges. */
+  box-shadow: inset 1.5px 0 0 rgba(0, 0, 0, 0.28),
+    inset -1.5px 0 0 rgba(0, 0, 0, 0.28);
+  /* Solid near the clip, thinned as it climbs, so the intro copy it passes
+     behind stays readable once the section has gone white. */
+  mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0,
+    rgba(0, 0, 0, 1) 140px,
+    rgba(0, 0, 0, 0.26) 300px,
+    rgba(0, 0, 0, 0.26) 100%
+  );
+}
+
+/* The clasp the card hangs from. */
+/* Solid, so the strap ends disappear behind it rather than showing through. */
+.xp-id-clip {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 20px;
+  height: 36px;
+  z-index: 1;
+  transform: translateX(-50%);
+  border-radius: 9px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--xp-fg) 62%, var(--xp-bg)),
+    color-mix(in srgb, var(--xp-fg) 34%, var(--xp-bg)) 55%,
+    color-mix(in srgb, var(--xp-fg) 52%, var(--xp-bg))
+  );
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--xp-fg) 30%, transparent);
+}
+
+/* The hook's eye, where the strap threads through. */
+.xp-id-clip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 7px;
+  height: 12px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: var(--xp-bg);
+}
+
+/* ---- The card ---- */
+/* Hangs from the clip, so it swings about its own top edge. */
+.xp-id-card {
+  position: relative;
+  width: clamp(232px, 20vw, 278px);
+  padding: 0 0 12px;
+  border-radius: 16px;
+  background: linear-gradient(
+    165deg,
+    var(--color-white),
+    var(--color-paper) 55%,
+    var(--color-cream)
+  );
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.3),
+    0 0 0 1px color-mix(in srgb, var(--xp-fg) 16%, transparent);
+  overflow: hidden;
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+/* The bob only starts once the drop-in has landed (JS adds `is-landed`), so
+   the two never overlap. It eases in from a still card rather than snapping
+   straight into mid-swing. */
+.xp-id.is-landed .xp-id-card {
+  animation: id-bob 4.6s ease-in-out infinite;
+}
+
+/* Up and down, with just enough tilt to read as hanging weight. Begins and
+   ends at the identity transform so switching the animation on after the
+   drop-in cannot snap the card into mid-swing. */
+@keyframes id-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(10px) rotate(1.5deg);
+  }
+  50% {
+    transform: translateY(18px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(10px) rotate(-1.5deg);
+  }
+}
+
+/* Hold it still to read — but only where hover is real, or a touch device
+   would latch the paused state and the card would stop for good. */
+@media (hover: hover) and (pointer: fine) {
+  .xp-id-card:hover {
+    animation-play-state: paused;
+  }
+}
+
+/* Punched slot at the top of the card — ringed so it reads against the
+   dark header behind it. */
+.xp-id-hole {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 40px;
+  height: 7px;
+  transform: translateX(-50%);
+  border-radius: 100px;
+  background: var(--color-night);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--color-cream) 34%, transparent),
+    inset 0 1px 2px rgba(0, 0, 0, 0.9);
+  z-index: 3;
+}
+
+/* Vertical "ID CARD" down the left edge, as on a printed pass. */
+.xp-id-side {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.32em;
+  color: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  z-index: 2;
+}
+
+.xp-id-head {
+  padding: 26px 16px 12px;
+  background: var(--color-night);
+  text-align: center;
+}
+
+.xp-id-head strong {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  color: var(--color-white);
+}
+
+.xp-id-head span {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 12px;
+  border-radius: 100px;
+  background: var(--color-lime);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+/* ---- Photo ---- */
+.xp-id-photo {
+  position: relative;
+  width: clamp(92px, 8.5vw, 108px);
+  aspect-ratio: 3 / 3.6;
+  margin: 13px auto 11px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-lime) 22%, var(--color-paper));
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* The source is a full-body cutout, so the frame is a window onto it:
+   the image is blown up and offset until only head-and-shoulders shows. */
+.xp-id-photo img {
+  position: absolute;
+  width: 328%;
+  height: auto;
+  left: -104%;
+  top: -37.5%;
+  display: block;
+}
+
+/* ---- Detail rows ---- */
+/* Bottom padding reserves the strip the signature sits in, so the script
+   never lands on the last row. */
+.xp-id-rows {
+  margin: 0;
+  padding: 0 16px 24px 20px;
+}
+
+.xp-id-rows > div {
+  display: grid;
+  grid-template-columns: 4.6em 1fr;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.xp-id-rows dt {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+.xp-id-rows dd {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--color-ink) 88%, transparent);
+}
+
+/* ---- Signature strip ---- */
+.xp-id-foot {
+  position: relative;
+  margin: 0;
+  padding: 4px 16px 5px;
+  background: var(--color-lime);
+  text-align: right;
+}
+
+.xp-id-sign {
+  position: absolute;
+  right: 18px;
+  bottom: 100%;
+  font-family: var(--font-script);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-ink) 75%, transparent);
+  transform: rotate(-4deg);
+}
+
+.xp-id-foot-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+/* ---- Timeline ---- */
+.xp-list {
+  position: relative;
+  padding-left: calc(var(--xp-rail) + var(--xp-gap));
+  border-top: 1px solid var(--xp-line);
+}
+
+/* The rail: a static hairline with a lime fill scaled by scroll. */
+.xp-rail {
+  position: absolute;
+  left: var(--xp-rail);
+  top: 0;
+  bottom: clamp(20px, 4vw, 46px);
+  width: 1px;
+  background: var(--xp-line);
+}
+
+.xp-rail-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--xp-fg);
+  transform: scaleY(0);
+  transform-origin: top;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--xp-fg) 30%, transparent);
+}
+
+.xp-item {
+  position: relative;
+  border-bottom: 1px solid var(--xp-line);
+}
+
+/* ---- Row header (the button) ---- */
+.xp-head-wrap {
+  margin: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+.xp-head {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 34px);
+  width: 100%;
+  padding: clamp(26px, 3.2vw, 40px) clamp(14px, 1.6vw, 24px)
+    clamp(26px, 3.2vw, 40px) clamp(14px, 1.6vw, 22px);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  transition: padding-left 0.45s cubic-bezier(0.6, 0.05, 0.05, 1),
+    color 0.35s ease;
+}
+
+/* Lime sweep on hover — from the rail side outward. It sits behind the
+   content and stops short of the rail so the node stays readable. */
+.xp-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 4px;
+  background: var(--color-lime);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s cubic-bezier(0.6, 0.05, 0.05, 1);
+}
+
+.xp-head:hover::before,
+.xp-head:focus-visible::before {
+  transform: scaleX(1);
+}
+
+/* One colour flip drives the whole row: every child below derives its tone
+   from currentColor, so cream-on-night becomes ink-on-lime in one step. */
+.xp-head:hover,
+.xp-head:focus-visible {
+  padding-left: clamp(26px, 3vw, 42px);
+  color: var(--color-ink);
+  outline: none;
+}
+
+.xp-head-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.xp-period {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, currentColor 58%, transparent);
+  transition: color 0.35s ease;
+}
+
+.xp-role {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.1vw, 2.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.xp-org {
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  color: color-mix(in srgb, currentColor 65%, transparent);
+  transition: color 0.35s ease;
+}
+
+.xp-org i {
+  font-style: normal;
+  margin: 0 4px;
+  color: var(--color-moss);
+}
+
+.xp-index {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: color-mix(in srgb, currentColor 45%, transparent);
+  align-self: start;
+  transition: color 0.35s ease;
+}
+
+/* ---- Plus / minus toggle ---- */
+.xp-toggle {
+  position: relative;
+  flex: none;
+  width: clamp(38px, 3.4vw, 46px);
+  height: clamp(38px, 3.4vw, 46px);
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 50%;
+  transition: background 0.35s ease, border-color 0.35s ease,
+    transform 0.55s cubic-bezier(0.6, 0.05, 0.05, 1);
+}
+
+.xp-toggle i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 1.5px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition: transform 0.5s cubic-bezier(0.6, 0.05, 0.05, 1), opacity 0.3s ease;
+}
+
+.xp-toggle i:last-child {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.xp-head:hover .xp-toggle,
+.xp-head:focus-visible .xp-toggle {
+  border-color: currentColor;
+  transform: rotate(90deg);
+}
+
+/* Open, at rest: lime disc against the night background. */
+.xp-item.is-open .xp-toggle {
+  background: var(--color-lime);
+  border-color: var(--color-lime);
+}
+
+.xp-item.is-open .xp-toggle i {
+  background: var(--color-ink);
+}
+
+/* Open rows keep the minus flat — rotating it would stand the bar on end.
+   Over the lime sweep the disc inverts to ink so it stays visible. */
+.xp-item.is-open .xp-head:hover .xp-toggle,
+.xp-item.is-open .xp-head:focus-visible .xp-toggle {
+  transform: none;
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.xp-item.is-open .xp-head:hover .xp-toggle i,
+.xp-item.is-open .xp-head:focus-visible .xp-toggle i {
+  background: var(--color-lime);
+}
+
+/* Open → the vertical bar folds away, leaving a minus. */
+.xp-item.is-open .xp-toggle i:last-child {
+  transform: translate(-50%, -50%) rotate(0deg);
+  opacity: 0;
+}
+
+/* ---- Node on the rail ---- */
+/* Sits outside the row box, centred on the rail line. */
+.xp-node {
+  position: absolute;
+  left: calc(var(--xp-gap) * -1);
+  top: clamp(34px, 3.9vw, 50px);
+  width: 11px;
+  height: 11px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--xp-bg);
+  border: 1.5px solid color-mix(in srgb, var(--xp-fg) 32%, transparent);
+  transition: background 0.4s ease, border-color 0.4s ease,
+    box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+/* Latches on once the rail's fill has reached this row — and the open row is
+   always lit, so a halo never sits around a hollow dot. */
+.xp-item.is-passed .xp-node,
+.xp-item.is-open .xp-node {
+  background: var(--xp-fg);
+  border-color: var(--xp-fg);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--xp-fg) 16%, transparent);
+}
+
+.xp-item.is-open .xp-node {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--xp-fg) 20%, transparent);
+}
+
+/* ---- Expanding panel (0fr → 1fr, no height maths) ---- */
+.xp-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.6s cubic-bezier(0.6, 0.05, 0.05, 1),
+    opacity 0.45s ease;
+}
+
+.xp-item.is-open .xp-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.xp-panel-in {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 clamp(14px, 1.6vw, 24px);
+}
+
+.xp-summary {
+  max-width: 60ch;
+  margin: 0 0 clamp(18px, 2vw, 26px);
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 1.35vw, 1.3rem);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--xp-fg) 90%, transparent);
+}
+
+.xp-points {
+  max-width: 62ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.xp-points li {
+  position: relative;
+  padding-left: 22px;
+  font-size: clamp(0.92rem, 1vw, 1.02rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--xp-fg) 72%, transparent);
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.xp-points li:focus-visible,
+.xp-points li:hover {
+  color: var(--xp-fg);
+  outline: none;
+  transform: translateX(5px);
+}
+
+/* Small lime tick instead of a bullet. */
+.xp-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 10px;
+  height: 1.5px;
+  background: var(--color-moss);
+}
+
+/* Cursor preview modelled on the reference interaction: the image follows
+   the hovered point and sits above the detail text. */
+.xp-item.is-open .xp-panel-in {
+  overflow: visible;
+}
+
+.xp-hover-preview {
+  position: absolute;
+  z-index: 8;
+  width: clamp(180px, 19vw, 280px);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--xp-fg) 22%, transparent);
+  border-radius: 12px;
+  background: var(--xp-bg);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 18px));
+  animation: xp-preview-in 0.22s ease both;
+}
+
+.xp-hover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: xp-preview-image 0.28s ease both;
+}
+
+@keyframes xp-preview-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 18px)) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 18px)) scale(1);
+  }
+}
+
+@keyframes xp-preview-image {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (hover: none) {
+  .xp-hover-preview {
+    display: none;
+  }
+}
+
+.xp-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: clamp(22px, 2.6vw, 32px) 0 clamp(30px, 3.4vw, 42px);
+}
+
+.xp-chip {
+  padding: 8px 17px;
+  border: 1px solid color-mix(in srgb, var(--xp-fg) 26%, transparent);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--xp-fg) 82%, transparent);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.xp-chip:hover {
+  background: var(--color-lime);
+  border-color: var(--color-lime);
+  color: var(--color-ink);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1020px) {
+  .xp-inner {
+    grid-template-columns: 1fr;
+    gap: clamp(38px, 7vw, 60px);
+  }
+
+  .xp-aside {
+    position: static;
+  }
+
+  .xp-head {
+    grid-template-columns: 1fr auto;
+  }
+
+  /* The numeral doubles up with the period line on narrow screens. */
+  .xp-index {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .xp {
+    --xp-rail: 9px;
+  }
+
+  .xp-role {
+    font-size: clamp(1.45rem, 7vw, 1.9rem);
+  }
+
+  .xp-head {
+    gap: 14px;
+  }
+
+  .xp-toggle {
+    width: 34px;
+    height: 34px;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-head,
+  .xp-head::before,
+  .xp-toggle,
+  .xp-toggle i,
+  .xp-node,
+  .xp-panel {
+    transition-duration: 0.01ms;
+  }
+
+  /* Specificity has to match the `.is-landed` rule that switches the bob on. */
+  .xp-id.is-landed .xp-id-card {
+    animation: none;
+  }
+}

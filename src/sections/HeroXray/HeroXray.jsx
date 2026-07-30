@@ -47,7 +47,8 @@ export default function HeroXray() {
   // Which hero is on top / in front. false → photo (hero 1), true → image
   // (hero 2). The top face is masked; the bottom face is the one revealed.
   const [revealed, setRevealed] = useState(false);
-  const [showHint, setShowHint] = useState(true);
+  // The reveal button pulses to invite the first click, then settles down.
+  const [pulsing, setPulsing] = useState(true);
   const [greet, setGreet] = useState(0);
   const animatingRef = useRef(false);
 
@@ -75,7 +76,7 @@ export default function HeroXray() {
   // the hidden bottom face — so there's no flash of the old hero.
   const toggleReveal = () => {
     if (animatingRef.current) return;
-    setShowHint(false);
+    setPulsing(false);
     const outEl = revealed ? imageRef.current : photoRef.current; // sliding away
     const inEl = revealed ? photoRef.current : imageRef.current; // revealed
     if (!outEl || !inEl) {
@@ -267,7 +268,7 @@ export default function HeroXray() {
         }`}
         ref={photoRef}
       >
-        <Hero id="hero" />
+        <Hero />
       </div>
 
       {/* Image face (hero 2) */}
@@ -302,40 +303,24 @@ export default function HeroXray() {
         </div>
       </div>
 
-      {/* Persistent overlay: reveal card on top, availability card below */}
+      {/* Persistent overlay: reveal card */}
       <div className="hero-cards">
-        <div className="hero-reveal-wrap">
-          <button
-            type="button"
-            className={`hero-reveal${revealed ? " is-active" : ""}`}
-            onClick={toggleReveal}
-            aria-pressed={revealed}
-          >
-            <span className="hero-reveal-icon" aria-hidden="true">
-              ⇅
-            </span>
-            <span className="hero-reveal-text">
-              <strong>{revealed ? "Back to me" : "The other side"}</strong>
-              <span>
-                {revealed ? "Return to portrait" : "Reveal · slide up"}
-              </span>
-            </span>
-          </button>
-
-          {showHint && (
-            <span className="hero-hint" aria-hidden="true">
-              Click me
-            </span>
-          )}
-        </div>
-
-        <aside className="hero-status">
-          <span className="hero-status-dot" />
-          <span className="hero-status-text">
-            <strong>Available for work</strong>
-            <span>Frontend Developer · 2025</span>
+        <button
+          type="button"
+          className={`hero-reveal${revealed ? " is-active" : ""}${
+            pulsing ? " is-pulsing" : ""
+          }`}
+          onClick={toggleReveal}
+          aria-pressed={revealed}
+        >
+          <span className="hero-reveal-icon" aria-hidden="true">
+            ⇅
           </span>
-        </aside>
+          <span className="hero-reveal-text">
+            <strong>{revealed ? "Back to me" : "The other side"}</strong>
+            <span>{revealed ? "Return to portrait" : "Reveal · slide up"}</span>
+          </span>
+        </button>
       </div>
 
       {/* Bottom-right meta */}

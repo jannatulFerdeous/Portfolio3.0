@@ -87,12 +87,11 @@
 /* ---- Info column ---- */
 .exp-num {
   display: block;
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-script);
+  font-weight: 400;
   font-size: clamp(3.2rem, 6.5vw, 6.6rem);
   line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.4px var(--color-lime);
+  color: var(--color-lime);
   margin-bottom: clamp(12px, 2.6vw, 26px);
 }
 
@@ -294,7 +293,6 @@
 @media (max-width: 768px) {
   .exp {
     --exp-slide: 100vw;
-    padding-top: clamp(80px, 14vh, 120px);
   }
 
   .exp-viewport {
